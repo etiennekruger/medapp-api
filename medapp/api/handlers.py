@@ -14,8 +14,11 @@ class CompareMyPriceHandler(BaseHandler):
             response = urllib2.urlopen(request)
             response_json = json.loads(response.read())
             response.close()
+
+            results = response_json
         else:
             search = request.GET.get('search')
+            unit_type = request.GET.get('unit_type')
             url = 'http://meddb.medicinesinfohub.net/json/medicine/'
             values = {'search': search}
             data = urllib.urlencode(values)
@@ -24,7 +27,12 @@ class CompareMyPriceHandler(BaseHandler):
             response_json = json.loads(response.read())
             response.close()
 
-        return response_json
+            results = []
+            for response_item in response_json:
+                if response_item['dosageform']['name'] == unit_type:
+                    results.append(response_item)
+
+        return results
 
 
 class FindSupplierHandler(BaseHandler):
