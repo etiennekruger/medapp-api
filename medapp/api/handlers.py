@@ -1,7 +1,20 @@
-import json
-import urllib
-import urllib2
 from piston.handler import BaseHandler
+from piston.utils import validate
+from profile.models import Profile
+from profile.forms import ProfileForm
+from utils.urllibs import urllib_request
+
+
+class RegistrationHandler(BaseHandler):
+    allowed_methods = ('POST',)
+    model = Profile
+    fields = ('id',)
+
+    @validate(ProfileForm, 'POST')
+    def create(self, request):
+        payload = self.flatten_dict(request.POST)
+        profile = self.model.objects.create(**payload)
+        return profile
 
 
 class CompareMyPriceHandler(BaseHandler):
@@ -10,29 +23,20 @@ class CompareMyPriceHandler(BaseHandler):
     def read(self, request, unit_id=None):
         if unit_id:
             url = 'http://meddb.medicinesinfohub.net/json/medicine/%s/' % unit_id
-            request = urllib2.Request(url)
-            response = urllib2.urlopen(request)
-            response_json = json.loads(response.read())
-            response.close()
-
-            results = response_json
+            result = urllib_request(url)
         else:
             search = request.GET.get('search')
             unit_type = request.GET.get('unit_type')
             url = 'http://meddb.medicinesinfohub.net/json/medicine/'
             values = {'search': search}
-            data = urllib.urlencode(values)
-            request = urllib2.Request(url + '?' + data)
-            response = urllib2.urlopen(request)
-            response_json = json.loads(response.read())
-            response.close()
+            response = urllib_request(url, values)
 
-            results = []
-            for response_item in response_json:
-                if response_item['dosageform']['name'] == unit_type:
-                    results.append(response_item)
+            result = []
+            for item in response:
+                if item['dosageform']['name'] == unit_type:
+                    result.append(item)
 
-        return results
+        return result
 
 
 class FindSupplierHandler(BaseHandler):
@@ -41,19 +45,12 @@ class FindSupplierHandler(BaseHandler):
     def read(self, request, unit_id=None):
         if unit_id:
             url = 'http://meddb.medicinesinfohub.net/json/medicine/%s/' % unit_id
-            request = urllib2.Request(url)
-            response = urllib2.urlopen(request)
-            response_json = json.loads(response.read())
-            response.close()
+            result = urllib_request(url)
         else:
             search = request.GET.get('search')
             url = 'http://meddb.medicinesinfohub.net/json/medicine/'
             values = {'search': search}
-            data = urllib.urlencode(values)
-            request = urllib2.Request(url + '?' + data)
-            response = urllib2.urlopen(request)
-            response_json = json.loads(response.read())
-            response.close()
+            result = urllib_request(url, values)
 
-        return response_json
+        return result
 
