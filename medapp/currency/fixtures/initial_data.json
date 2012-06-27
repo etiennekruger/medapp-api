@@ -1,0 +1,29 @@
+[ 
+    {
+        "pk": 1, 
+        "model": "currency.currency", 
+        "fields": {
+            "name": "USD", 
+            "rate": 1.0,
+            "updated": "2012-06-01 00:00:00"
+        }
+    },
+    {
+        "pk": 2, 
+        "model": "currency.currency", 
+        "fields": {
+            "name": "EUR", 
+            "rate": 1.25,
+            "updated": "2012-06-01 00:00:00"
+        }
+    },
+    {
+        "pk": 3, 
+        "model": "currency.currency", 
+        "fields": {
+            "name": "ZAR", 
+            "rate": 0.12,
+            "updated": "2012-06-01 00:00:00"
+        }
+    }
+]

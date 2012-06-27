@@ -117,6 +117,7 @@ INSTALLED_APPS = (
     #apps
     'api',
     'profile',
+    'currency',
 
     #libs
     'piston',
