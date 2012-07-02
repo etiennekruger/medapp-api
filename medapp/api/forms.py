@@ -3,6 +3,7 @@ from django import forms
 
 class CompareMyPrice2Form(forms.Form):
     med_name = forms.CharField(max_length=255)
+    type_price = forms.CharField(max_length=255, required=False)
     price = forms.FloatField()
     currency = forms.CharField(max_length=255)
     unit_type = forms.CharField(max_length=255)

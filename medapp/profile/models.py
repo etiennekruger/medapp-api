@@ -11,6 +11,7 @@ class Profile(models.Model):
 
     class Meta:
         ordering = ['-created']
+        verbose_name_plural = 'Profile'
 
     def __unicode__(self):
         return '%s' % self.name

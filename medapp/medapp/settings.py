@@ -117,6 +117,7 @@ INSTALLED_APPS = (
     #apps
     'api',
     'profile',
+    'support',
     'currency',
 
     #libs

@@ -3,20 +3,61 @@ from piston.utils import rc, validate
 from api.forms import CompareMyPrice2Form, CompareMyPrice3Form,\
     FindSupplier2Form, FindSupplier3Form
 from profile.models import Profile
-from profile.forms import ProfileForm
+from profile.forms import RegistrationForm, GetProfileForm, UpdateProfileForm
 from currency.models import Currency
+from support.models import NeedExpert, NeedHelp
+from support.forms import NeedExpertForm, NeedHelpForm
 from utils.urllibs import urllib_request
 
 
 class RegistrationHandler(BaseHandler):
     allowed_methods = ('POST',)
     model = Profile
-    fields = ('id',)
+    fields = ('id', 'name', 'organisation', 'email', 'phone')
 
-    @validate(ProfileForm, 'POST')
+    @validate(RegistrationForm, 'POST')
     def create(self, request):
         payload = self.flatten_dict(request.POST)
         profile = self.model.objects.create(**payload)
+        return profile
+
+
+class GetProfileHandler(BaseHandler):
+    allowed_methods = ('GET',)
+    model = Profile
+    fields = ('id', 'name', 'organisation', 'email', 'phone')
+
+    @validate(GetProfileForm, 'GET')
+    def read(self, request):
+        profile_id = request.GET.get('profile_id')
+
+        try:
+            profile = Profile.objects.get(id=profile_id)
+        except Exception, e:
+            return rc.NOT_FOUND
+        return profile
+
+
+class UpdateProfileHandler(BaseHandler):
+    allowed_methods = ('PUT',)
+    model = Profile
+    fields = ('id', 'name', 'organisation', 'email', 'phone')
+
+    @validate(UpdateProfileForm, 'PUT')
+    def update(self, request):
+        profile_id = request.PUT.get('profile_id')
+
+        try:
+            profile = Profile.objects.get(id=profile_id)
+        except Exception, e:
+            return rc.NOT_FOUND
+
+        profile.name = request.PUT.get('name')
+        profile.organisation = request.PUT.get('organisation')
+        profile.email = request.PUT.get('email')
+        profile.phone = request.PUT.get('phone')
+        profile.save()
+
         return profile
 
 
@@ -147,4 +188,47 @@ class FindSupplier3Handler(BaseHandler):
             response['results'].append(result)
 
         return response
+
+
+class NeedExpertHandler(BaseHandler):
+    allowed_methods = ('POST',)
+    model = NeedExpert
+    fields = ('id', 'profile', 'expert_type', 'details')
+
+    @validate(NeedExpertForm, 'POST')
+    def create(self, request):
+        profile_id = request.POST.get('profile_id')
+        expert_type = request.POST.get('expert_type')
+        details = request.POST.get('details')
+
+        try:
+            profile = Profile.objects.get(id=profile_id)
+        except Exception, e:
+            return rc.BAD_REQUEST
+
+        need_expert = NeedExpert.objects.create(profile=profile,
+                                                expert_type=expert_type,
+                                                details=details)
+
+        return need_expert
+
+
+class NeedHelpHandler(BaseHandler):
+    allowed_methods = ('POST',)
+    model = NeedHelp
+    fields = ('id', 'profile', 'details')
+
+    @validate(NeedHelpForm, 'POST')
+    def create(self, request):
+        profile_id = request.POST.get('profile_id')
+        details = request.POST.get('details')
+
+        try:
+            profile = Profile.objects.get(id=profile_id)
+        except Exception, e:
+            return rc.BAD_REQUEST
+
+        need_help = NeedHelp.objects.create(profile=profile, details=details)
+
+        return need_help
 

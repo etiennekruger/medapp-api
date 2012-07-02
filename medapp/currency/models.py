@@ -8,7 +8,7 @@ class Currency(models.Model):
 
     class Meta:
         ordering = ['-updated']
-        verbose_name_plural = 'currencies'
+        verbose_name_plural = 'Currency'
 
     def __unicode__(self):
         return '%s' % self.name
