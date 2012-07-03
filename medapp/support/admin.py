@@ -3,7 +3,7 @@ from support.models import NeedExpert, NeedHelp
 
 
 class NeedExpertAdmin(admin.ModelAdmin):
-    list_display = ['__unicode__', 'created']
+    list_display = ['__unicode__', 'expert_type', 'created']
     raw_id_fields = ['profile']
 
 

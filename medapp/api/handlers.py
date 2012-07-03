@@ -108,7 +108,6 @@ class CompareMyPrice3Handler(BaseHandler):
     @validate(CompareMyPrice3Form, 'GET')
     def read(self, request):
         med_id = request.GET.get('med_id')
-        my_price = request.GET.get('my_price')
 
         url = 'http://meddb.medicinesinfohub.net/json/medicine/%s/' % med_id
         meddb_response = urllib_request(url)
@@ -116,15 +115,8 @@ class CompareMyPrice3Handler(BaseHandler):
             return rc.BAD_REQUEST
 
         response = {}
-        response['my_price'] = my_price
         response['mshprice'] = meddb_response['mshprice']
         response['dosageform'] = meddb_response['dosageform']
-        response['ingredients'] = []
-        for meddb_ing in meddb_response['ingredients']:
-            response_ing = {}
-            response_ing['inn'] = meddb_ing['inn']
-            response_ing['strength'] = meddb_ing['strength']
-            response['ingredients'].append(response_ing)
         response['results'] = []
         for procurement in meddb_response['procurements']:
             result = {}
@@ -214,14 +206,20 @@ class NeedExpertHandler(BaseHandler):
 
 
 class NeedHelpHandler(BaseHandler):
-    allowed_methods = ('POST',)
+    allowed_methods = ('GET',)
     model = NeedHelp
     fields = ('id', 'profile', 'details')
 
-    @validate(NeedHelpForm, 'POST')
-    def create(self, request):
-        profile_id = request.POST.get('profile_id')
-        details = request.POST.get('details')
+    @validate(NeedHelpForm, 'GET')
+    def read(self, request):
+        profile_id = request.GET.get('profile_id')
+        details = request.GET.get('details')
+
+        url = 'https://teststeelkiwi.zendesk.com/api/v2/tickets.json'
+        values = {'ticket': {'subject': 'I need help!!!', 'description': 'Description'}}
+        zendesk_response = urllib_request(url, values, 'POST')
+        if zendesk_response == 'Invalid request':
+            return rc.BAD_REQUEST
 
         try:
             profile = Profile.objects.get(id=profile_id)

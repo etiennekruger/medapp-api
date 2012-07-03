@@ -12,7 +12,6 @@ class CompareMyPrice2Form(forms.Form):
 
 class CompareMyPrice3Form(forms.Form):
     med_id = forms.IntegerField()
-    my_price = forms.FloatField()
 
 
 class FindSupplier2Form(forms.Form):

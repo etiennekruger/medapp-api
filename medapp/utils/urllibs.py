@@ -11,6 +11,8 @@ def urllib_request(url, values=None, request_type='GET'):
                 request = urllib2.Request(url + '?' + data)
             elif request_type == 'POST':
                 request = urllib2.Request(url, data)
+            else:
+                return 'Invalid request'
         else:
             request = urllib2.Request(url)
 
