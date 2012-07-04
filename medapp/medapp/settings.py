@@ -158,3 +158,9 @@ try:
 except ImportError:
     pass
 
+MEDDB_URL = 'http://meddb.medicinesinfohub.net'
+
+ZENDESK_URL = 'https://teststeelkiwi.zendesk.com'
+ZENDESK_LOGIN = 'andrey.machonin@gmail.com'
+ZENDESK_PASSWORD = 'asd30038'
+

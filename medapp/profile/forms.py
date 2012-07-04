@@ -2,14 +2,14 @@ from django import forms
 from profile.models import Profile
 
 
-class RegistrationForm(forms.ModelForm):
+class GetProfileForm(forms.Form):
+    profile_id = forms.IntegerField()
+
+
+class CreateProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-
-
-class GetProfileForm(forms.Form):
-    profile_id = forms.IntegerField()
 
 
 class UpdateProfileForm(forms.ModelForm):

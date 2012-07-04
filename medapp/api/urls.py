@@ -1,13 +1,11 @@
 from django.conf.urls import patterns, include, url
 from piston.resource import Resource
-from api.handlers import RegistrationHandler, GetProfileHandler,\
-    UpdateProfileHandler, CompareMyPrice2Handler, CompareMyPrice3Handler,\
-    FindSupplier2Handler, FindSupplier3Handler, NeedExpertHandler, NeedHelpHandler
+from api.handlers import ProfileHandler, CompareMyPrice2Handler,\
+    CompareMyPrice3Handler, FindSupplier2Handler, FindSupplier3Handler,\
+    NeedExpertHandler, NeedHelpHandler
 
 
-reg_handler = Resource(RegistrationHandler)
-get_handler = Resource(GetProfileHandler)
-upd_handler = Resource(UpdateProfileHandler)
+pro_handler = Resource(ProfileHandler)
 
 cmp2_handler = Resource(CompareMyPrice2Handler)
 cmp3_handler = Resource(CompareMyPrice3Handler)
@@ -20,9 +18,7 @@ nh_handler = Resource(NeedHelpHandler)
 
 
 urlpatterns = patterns('',
-    url(r'^registration/$', reg_handler),
-    url(r'^get-profile/$', get_handler),
-    url(r'^update-profile/$', upd_handler),
+    url(r'^profile/$', pro_handler),
 
     url(r'^compare-my-price/2/$', cmp2_handler),
     url(r'^compare-my-price/3/$', cmp3_handler),
