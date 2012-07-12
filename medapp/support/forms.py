@@ -2,8 +2,10 @@ from django import forms
 from support.models import NeedExpert, NeedHelp
 
 
+"""
 class GetNeedExpertListForm(forms.Form):
     profile_id = forms.IntegerField()
+"""
 
 
 class GetNeedExpertForm(forms.Form):
@@ -21,8 +23,10 @@ class UpdateNeedExpertForm(forms.Form):
     details = forms.CharField(max_length=255)
 
 
+"""
 class GetNeedHelpListForm(forms.Form):
     profile_id = forms.IntegerField()
+"""
 
 
 class GetNeedHelpForm(forms.Form):

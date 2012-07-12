@@ -164,3 +164,5 @@ ZENDESK_URL = 'https://teststeelkiwi.zendesk.com'
 ZENDESK_LOGIN = 'andrey.machonin@gmail.com'
 ZENDESK_PASSWORD = 'asd30038'
 
+CERT_FILE = rel('meds.pem')
+

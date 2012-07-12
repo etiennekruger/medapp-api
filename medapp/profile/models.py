@@ -6,6 +6,7 @@ class Profile(models.Model):
     organisation = models.CharField(max_length=255)
     email = models.EmailField(max_length=255)
     phone = models.CharField(max_length=255)
+    device_token = models.CharField(max_length=64)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

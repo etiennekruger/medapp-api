@@ -21,3 +21,8 @@ class FindSupplier2Form(forms.Form):
 class FindSupplier3Form(forms.Form):
     med_id = forms.IntegerField()
 
+
+class PushNotificationForm(forms.Form):
+    ticket_id = forms.IntegerField()
+    message = forms.CharField(max_length=255)
+

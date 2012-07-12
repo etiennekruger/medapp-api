@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from piston.resource import Resource
 from api.handlers import ProfileHandler, CompareMyPrice2Handler,\
     CompareMyPrice3Handler, FindSupplier2Handler, FindSupplier3Handler,\
-    NeedExpertHandler, NeedExpertListHandler, NeedHelpHandler, NeedHelpListHandler
+    NeedExpertHandler, NeedHelpHandler, PushNotificationHandler
 
 
 pro_handler = Resource(ProfileHandler)
@@ -16,8 +16,10 @@ fs3_handler = Resource(FindSupplier3Handler)
 ne_handler = Resource(NeedExpertHandler)
 nh_handler = Resource(NeedHelpHandler)
 
-nel_handler = Resource(NeedExpertListHandler)
-nhl_handler = Resource(NeedHelpListHandler)
+#nel_handler = Resource(NeedExpertListHandler)
+#nhl_handler = Resource(NeedHelpListHandler)
+
+ph_handler = Resource(PushNotificationHandler)
 
 
 urlpatterns = patterns('',
@@ -32,7 +34,9 @@ urlpatterns = patterns('',
     url(r'^need-expert/$', ne_handler),
     url(r'^need-help/$', nh_handler),
 
-    url(r'^need-expert/list/$', nel_handler),
-    url(r'^need-help/list/$', nhl_handler),
+    #url(r'^need-expert/list/$', nel_handler),
+    #url(r'^need-help/list/$', nhl_handler),
+
+    url(r'^push-notification/$', ph_handler),
 )
 

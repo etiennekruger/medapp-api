@@ -1,24 +1,24 @@
 import json
 import requests
+from apns import APNs, Payload
 from django.conf import settings
 from piston.handler import BaseHandler
 from piston.utils import rc, validate
 from api.forms import CompareMyPrice2Form, CompareMyPrice3Form,\
-    FindSupplier2Form, FindSupplier3Form
+    FindSupplier2Form, FindSupplier3Form, PushNotificationForm
 from api.utils import get_value
 from profile.models import Profile
 from profile.forms import GetProfileForm, CreateProfileForm, UpdateProfileForm
 from currency.models import Currency
 from support.models import NeedExpert, NeedHelp
-from support.forms import GetNeedExpertForm, GetNeedExpertListForm,\
-    CreateNeedExpertForm, UpdateNeedExpertForm, GetNeedHelpForm,\
-    GetNeedHelpListForm, CreateNeedHelpForm, UpdateNeedHelpForm
+from support.forms import GetNeedExpertForm, CreateNeedExpertForm,\
+    UpdateNeedExpertForm, GetNeedHelpForm, CreateNeedHelpForm, UpdateNeedHelpForm
 
 
 class ProfileHandler(BaseHandler):
     allowed_methods = ('GET', 'POST', 'PUT')
     model = Profile
-    fields = ('id', 'name', 'organisation', 'email', 'phone')
+    fields = ('id', 'name', 'organisation', 'email', 'phone', 'device_token')
 
     @validate(GetProfileForm, 'GET')
     def read(self, request):
@@ -46,6 +46,7 @@ class ProfileHandler(BaseHandler):
         profile.organisation = request.PUT.get('organisation')
         profile.email = request.PUT.get('email')
         profile.phone = request.PUT.get('phone')
+        profile.device_token = request.PUT.get('device_token')
         profile.save()
         return profile
 
@@ -176,6 +177,7 @@ class FindSupplier3Handler(BaseHandler):
         return response
 
 
+"""
 class NeedExpertListHandler(BaseHandler):
     allowed_methods = ('GET',)
     model = NeedExpert
@@ -186,6 +188,7 @@ class NeedExpertListHandler(BaseHandler):
         profile_id = request.GET.get('profile_id')
         need_expert_list = NeedExpert.objects.filter(profile__id=profile_id)
         return need_expert_list
+"""
 
 
 class NeedExpertHandler(BaseHandler):
@@ -260,6 +263,7 @@ class NeedExpertHandler(BaseHandler):
         return json
 
 
+"""
 class NeedHelpListHandler(BaseHandler):
     allowed_methods = ('GET',)
     model = NeedHelp
@@ -270,6 +274,7 @@ class NeedHelpListHandler(BaseHandler):
         profile_id = request.GET.get('profile_id')
         need_help_list = NeedHelp.objects.filter(profile__id=profile_id)
         return need_help_list
+"""
 
 
 class NeedHelpHandler(BaseHandler):
@@ -340,4 +345,29 @@ class NeedHelpHandler(BaseHandler):
             return rc.BAD_REQUEST
 
         return json
+
+
+class PushNotificationHandler(BaseHandler):
+    allowed_methods = ('GET',)
+
+    @validate(PushNotificationForm, 'GET')
+    def read(self, request):
+        ticket_id = request.GET.get('ticket_id')
+        message = request.GET.get('message')
+        device_token = None
+
+        for need in (NeedExpert, NeedHelp):
+            try:
+                ticket = need.objects.get(ticket_id=ticket_id)
+                device_token = ticket.profile.device_token
+                break
+            except:
+                pass
+        if device_token is None:
+            return rc.NOT_FOUND
+
+        apns = APNs(use_sandbox=True, cert_file=settings.CERT_FILE)
+        payload = Payload(alert=message)
+        result = apns.gateway_server.send_notification(device_token, payload)
+        return {'result': result}
 
