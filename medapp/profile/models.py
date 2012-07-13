@@ -4,6 +4,7 @@ from django.db import models
 class Profile(models.Model):
     name = models.CharField(max_length=255)
     organisation = models.CharField(max_length=255)
+    country = models.CharField(max_length=255)
     email = models.EmailField(max_length=255)
     phone = models.CharField(max_length=255)
     device_token = models.CharField(max_length=64)

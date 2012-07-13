@@ -18,7 +18,7 @@ from support.forms import GetNeedExpertForm, CreateNeedExpertForm,\
 class ProfileHandler(BaseHandler):
     allowed_methods = ('GET', 'POST', 'PUT')
     model = Profile
-    fields = ('id', 'name', 'organisation', 'email', 'phone', 'device_token')
+    fields = ('id', 'name', 'organisation', 'country', 'email', 'phone', 'device_token')
 
     @validate(GetProfileForm, 'GET')
     def read(self, request):
@@ -44,6 +44,7 @@ class ProfileHandler(BaseHandler):
             return rc.NOT_FOUND
         profile.name = request.PUT.get('name')
         profile.organisation = request.PUT.get('organisation')
+        profile.country = request.PUT.get('country')
         profile.email = request.PUT.get('email')
         profile.phone = request.PUT.get('phone')
         profile.device_token = request.PUT.get('device_token')
