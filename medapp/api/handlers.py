@@ -58,15 +58,15 @@ class CompareMyPrice2Handler(BaseHandler):
     @validate(CompareMyPrice2Form, 'GET')
     def read(self, request):
         med_name = request.GET.get('med_name')
-        price = float(request.GET.get('price'))
-        currency = request.GET.get('currency')
+        price = float(request.GET.get('price', 0.0)) if request.GET.get('price', 0.0) else 0.0
+        currency = request.GET.get('currency', 'USD')
         unit_type = request.GET.get('unit_type')
-        num_unit = float(request.GET.get('num_unit'))
+        num_unit = float(request.GET.get('num_unit', 1.0)) if request.GET.get('num_unit', 1.0) else 1.0
 
         try:
             currency_rate = Currency.objects.get(name=currency).rate
         except Exception, e:
-            return rc.BAD_REQUEST
+            currency_rate = 1.0
 
         url = settings.MEDDB_URL + '/json/medicine/'
         params = {'search': med_name}
@@ -79,7 +79,7 @@ class CompareMyPrice2Handler(BaseHandler):
         response['my_price'] = currency_rate * price / num_unit
         response['results'] = []
         for meddb_item in meddb_json:
-            if get_value(meddb_item, 'dosageform', 'name') == unit_type:
+            if not unit_type or get_value(meddb_item, 'dosageform', 'name') == unit_type:
                 result = {}
                 result['id'] = get_value(meddb_item, 'id')
                 result['dosageform'] = get_value(meddb_item, 'dosageform', 'name')
